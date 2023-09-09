@@ -23,7 +23,7 @@ class Dorm
     #[ORM\OneToMany(mappedBy: 'dorm', targetEntity: Machine::class)]
     private Collection $machines;
 
-    #[ORM\ManyToOne(inversedBy: 'dorms')]
+    #[ORM\ManyToOne(inversedBy: 'admin_dorms')]
     private ?User $administrator = null;
 
     #[ORM\OneToMany(mappedBy: 'dorm', targetEntity: User::class)]
