@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\AdminRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,6 +34,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'administrator', targetEntity: Dorm::class)]
+    private Collection $admin_dorms;
+
+    #[ORM\ManyToOne(inversedBy: 'residents')]
+    private ?Dorm $dorm = null;
+
+    public function __construct()
+    {
+        $this->admin_dorms = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -101,5 +114,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Dorm>
+     */
+    public function getDorms(): Collection
+    {
+        return $this->admin_dorms;
+    }
+
+    public function addAdminDorm(Dorm $dorm): static
+    {
+        if (!$this->admin_dorms->contains($dorm)) {
+            $this->admin_dorms->add($dorm);
+            $dorm->setAdministrator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdminDorm(Dorm $dorm): static
+    {
+        if ($this->admin_dorms->removeElement($dorm)) {
+            // set the owning side to null (unless already changed)
+            if ($dorm->getAdministrator() === $this) {
+                $dorm->setAdministrator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDorm(): ?Dorm
+    {
+        return $this->dorm;
+    }
+
+    public function setDorm(?Dorm $dorm): static
+    {
+        $this->dorm = $dorm;
+
+        return $this;
     }
 }

@@ -25,6 +25,9 @@ class Machine
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastMaintenance = null;
 
+    #[ORM\ManyToOne(inversedBy: 'machines')]
+    private ?Dorm $dorm = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +65,18 @@ class Machine
     public function setLastMaintenance(?\DateTimeInterface $lastMaintenance): static
     {
         $this->lastMaintenance = $lastMaintenance;
+
+        return $this;
+    }
+
+    public function getDorm(): ?Dorm
+    {
+        return $this->dorm;
+    }
+
+    public function setDorm(?Dorm $dorm): static
+    {
+        $this->dorm = $dorm;
 
         return $this;
     }
