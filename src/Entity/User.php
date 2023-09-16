@@ -62,9 +62,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'residents')]
     private ?Dorm $dorm = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: History::class)]
+    private Collection $history;
+
     public function __construct()
     {
         $this->admin_dorms = new ArrayCollection();
+        $this->history = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -174,6 +178,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDorm(?Dorm $dorm): static
     {
         $this->dorm = $dorm;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, History>
+     */
+    public function getHistory(): Collection
+    {
+        return $this->history;
+    }
+
+    public function addHistory(History $history): static
+    {
+        if (!$this->history->contains($history)) {
+            $this->history->add($history);
+            $history->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistory(History $history): static
+    {
+        if ($this->history->removeElement($history)) {
+            // set the owning side to null (unless already changed)
+            if ($history->getUser() === $this) {
+                $history->setUser(null);
+            }
+        }
 
         return $this;
     }

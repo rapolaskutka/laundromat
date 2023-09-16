@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MachineRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -27,6 +29,14 @@ class Machine
 
     #[ORM\ManyToOne(inversedBy: 'machines')]
     private ?Dorm $dorm = null;
+
+    #[ORM\OneToMany(mappedBy: 'machine', targetEntity: History::class)]
+    private Collection $history;
+
+    public function __construct()
+    {
+        $this->history = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -77,6 +87,36 @@ class Machine
     public function setDorm(?Dorm $dorm): static
     {
         $this->dorm = $dorm;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, History>
+     */
+    public function getHistory(): Collection
+    {
+        return $this->history;
+    }
+
+    public function addHistory(History $history): static
+    {
+        if (!$this->history->contains($history)) {
+            $this->history->add($history);
+            $history->setMachine($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistory(History $history): static
+    {
+        if ($this->history->removeElement($history)) {
+            // set the owning side to null (unless already changed)
+            if ($history->getMachine() === $this) {
+                $history->setMachine(null);
+            }
+        }
 
         return $this;
     }
