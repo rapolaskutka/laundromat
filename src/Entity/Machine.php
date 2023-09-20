@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Repository\MachineRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,6 +14,21 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MachineRepository::class)]
 #[ApiResource]
+#[ApiResource(
+    uriTemplate: '/dorms/{dormId}/machines/{id}',
+    operations: [ new Get() ],
+    uriVariables: [
+        'dormId' => new Link(toProperty: 'dorm', fromClass: Dorm::class),
+        'id' => new Link(fromClass: Machine::class),
+    ]
+)]
+#[ApiResource(
+    uriTemplate: '/dorms/{dormId}/machines',
+    operations: [ new GetCollection() ],
+    uriVariables: [
+        'dormId' => new Link(toProperty: 'dorm', fromClass: Dorm::class),
+    ]
+)]
 class Machine
 {
     #[ORM\Id]
