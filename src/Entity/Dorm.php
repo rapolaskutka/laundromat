@@ -20,10 +20,11 @@ class Dorm
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'dorm', targetEntity: Machine::class)]
+    #[ORM\OneToMany(mappedBy: 'dorm', targetEntity: Machine::class, cascade: ['persist', 'remove'])]
     private Collection $machines;
 
     #[ORM\ManyToOne(inversedBy: 'admin_dorms')]
+    #[ORM\JoinColumn(name: "administrator_id", referencedColumnName: "id", onDelete: "SET NULL")]
     private ?User $administrator = null;
 
     #[ORM\OneToMany(mappedBy: 'dorm', targetEntity: User::class)]

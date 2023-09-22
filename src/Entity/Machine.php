@@ -45,7 +45,8 @@ class Machine
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastMaintenance = null;
 
-    #[ORM\ManyToOne(inversedBy: 'machines')]
+    #[ORM\ManyToOne(targetEntity: Dorm::class, inversedBy: 'machines')]
+    #[ORM\JoinColumn(name: 'dorm', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private ?Dorm $dorm = null;
 
     #[ORM\OneToMany(mappedBy: 'machine', targetEntity: History::class)]
