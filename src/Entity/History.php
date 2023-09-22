@@ -3,12 +3,32 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Repository\HistoryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: HistoryRepository::class)]
 #[ApiResource]
+#[ApiResource(
+    uriTemplate: '/dorms/{dormId}/machines/{machineId}/histories/{id}',
+    operations: [ new Get() ],
+    uriVariables: [
+        'dormId' => new Link(toProperty: 'dorm', fromClass: Dorm::class),
+        'machineId' => new Link(toProperty: 'machine', fromClass: Machine::class),
+        'id' => new Link(fromClass: History::class),
+    ]
+)]
+#[ApiResource(
+    uriTemplate: '/dorms/{dormId}/machines/{machineId}/histories',
+    operations: [ new GetCollection() ],
+    uriVariables: [
+        'dormId' => new Link(toProperty: 'dorm', fromClass: Dorm::class),
+        'machineId' => new Link(toProperty: 'machine', fromClass: Machine::class),
+    ]
+)]
 class History
 {
     #[ORM\Id]

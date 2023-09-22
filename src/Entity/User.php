@@ -60,6 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $admin_dorms;
 
     #[ORM\ManyToOne(inversedBy: 'residents')]
+    #[ORM\JoinColumn(name: "dorm_id", referencedColumnName: "id", onDelete: "CASCADE")]
     private ?Dorm $dorm = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: History::class)]
