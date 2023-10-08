@@ -1,6 +1,9 @@
 api_platform:
     title: Laundromat
     version: 1.0.0
+    formats:
+        json: ['application/json']
+        html: ['text/html']
     defaults:
         stateless: true
         cache_headers:
