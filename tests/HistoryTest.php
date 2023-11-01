@@ -5,17 +5,9 @@ namespace App\Tests;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Repository\AdminRepository;
 
-class UserTest extends ApiTestCase
+class HistoryTest extends ApiTestCase
 {
-
-    public function testBadAuth(): void
-    {
-        $response = static::createClient()->request('GET', '/api/users', ['headers' => ['accept' => 'application/json']]);
-
-        $this->assertResponseStatusCodeSame(401);
-    }
-
-    public function testGetUsers(): void
+    public function testGetMachines(): void
     {
         $client = static::createClient();
         /** @var AdminRepository $userRepository */
@@ -24,8 +16,7 @@ class UserTest extends ApiTestCase
 
         $client->loginUser($user);
 
-
-        $response = $client->request('GET', '/api/users', ['headers' => ['accept' => 'application/json']]);
+        $response = $client->request('GET', '/api/histories', ['headers' => ['accept' => 'application/json']]);
 
         $this->assertResponseIsSuccessful();
     }
