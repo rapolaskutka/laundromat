@@ -2,31 +2,85 @@
 
 namespace App\Tests;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Repository\AdminRepository;
+use App\Entity\History;
+use App\Entity\User;
+use App\Entity\Dorm;
+use PHPUnit\Framework\TestCase;
 
-class UserTest extends ApiTestCase
+class UserTest extends TestCase
 {
-
-    public function testBadAuth(): void
+    public function testGetSetEmail()
     {
-        $response = static::createClient()->request('GET', '/api/users', ['headers' => ['accept' => 'application/json']]);
+        $email = 'test@example.com';
+        $user = new User();
+        $user->setEmail($email);
 
-        $this->assertResponseStatusCodeSame(401);
+        $this->assertEquals($email, $user->getEmail());
+    }
+    public function testEraseCredentials()
+    {
+        $user = new User();
+        $clonedUser = clone $user;
+        $user->eraseCredentials();
+
+        $this->assertEquals($user, $clonedUser);
     }
 
-    public function testGetUsers(): void
+    public function testGetSetRoles()
     {
-        $client = static::createClient();
-        /** @var AdminRepository $userRepository */
-        $userRepository = static::getContainer()->get(AdminRepository::class);
-        $user = $userRepository->findOneBy(['email' => 'admin@admin.ktu']);
+        $roles = ['ROLE_USER'];
+        $user = new User();
+        $user->setRoles($roles);
 
-        $client->loginUser($user);
+        $this->assertEquals($roles, $user->getRoles());
+    }
 
+    public function testGetSetPassword()
+    {
+        $password = 'password';
+        $user = new User();
+        $user->setPassword($password);
 
-        $response = $client->request('GET', '/api/users', ['headers' => ['accept' => 'application/json']]);
+        $this->assertEquals($password, $user->getPassword());
+    }
 
-        $this->assertResponseIsSuccessful();
+    public function testAddRemoveDorm()
+    {
+        $user = new User();
+        $dorm = new Dorm();
+
+        $user->addAdminDorm($dorm);
+        $this->assertContains($dorm, $user->getDorms());
+
+        $user->removeAdminDorm($dorm);
+        $this->assertNotContains($dorm, $user->getDorms());
+    }
+
+    public function testGetSetDorm()
+    {
+        $user = new User();
+        $dorm = new Dorm();
+
+        $user->setDorm($dorm);
+        $this->assertSame($dorm, $user->getDorm());
+    }
+
+    public function testAddRemoveHistory()
+    {
+        $user = new User();
+        $history = new History();
+
+        $user->addHistory($history);
+        $this->assertContains($history, $user->getHistory());
+
+        $user->removeHistory($history);
+        $this->assertNotContains($history, $user->getHistory());
+    }
+
+    public function testGetUserIdentifier()
+    {
+        $user = new User();
+        $user->setEmail('test@test.ktu');
+        $this->assertSame($user->getEmail(), $user->getUserIdentifier());
     }
 }
