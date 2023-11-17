@@ -5,9 +5,9 @@ namespace App\Tests;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Repository\AdminRepository;
 
-class HistoryTest extends ApiTestCase
+class DormApiTest extends ApiTestCase
 {
-    public function testGetHistory(): void
+    public function testGetDorm(): void
     {
         $client = static::createClient();
         /** @var AdminRepository $userRepository */
@@ -16,12 +16,12 @@ class HistoryTest extends ApiTestCase
 
         $client->loginUser($user);
 
-        $response = $client->request('GET', '/api/histories', ['headers' => ['accept' => 'application/json']]);
+        $response = $client->request('GET', '/api/dorms', ['headers' => ['accept' => 'application/json']]);
 
         $this->assertResponseIsSuccessful();
     }
 
-    public function testPostHistory()
+    public function testPostDorm()
     {
         $client = static::createClient();
         /** @var AdminRepository $userRepository */
@@ -31,15 +31,14 @@ class HistoryTest extends ApiTestCase
         $client->loginUser($user);
 
         $data = [
-            'startDate' => '2023-11-04T10:08:46.810Z',
-            'endDate' => '2023-11-04T10:08:46.810Z',
+            'name' => 'test',
             'user' => '/api/users/' . $user->getId(),
-            'machine' => null
+            'residents' => ['/api/users/' . $user->getId()]
         ];
 
         $response = $client->request(
             'POST',
-            '/api/histories',
+            '/api/dorms',
             ['headers' => ['CONTENT_TYPE' => 'application/json', 'accept' => 'application/json'], 'body' => json_encode($data)]
         );
 

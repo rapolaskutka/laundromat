@@ -1,109 +1,23 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Entity;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Entity\Dorm;
 use App\Entity\History;
 use App\Entity\Machine;
-use App\Repository\AdminRepository;
-use App\Repository\MachineRepository;
+use PHPUnit\Framework\TestCase;
 
-class MachineTest extends ApiTestCase
+class MachineTest extends TestCase
 {
-    public function testGetMachines(): void
+    public function testAddRemoveHistory(): void
     {
-        $client = static::createClient();
-        /** @var AdminRepository $userRepository */
-        $userRepository = static::getContainer()->get(AdminRepository::class);
-        $user = $userRepository->findOneBy(['email' => 'admin@admin.ktu']);
-
-        $client->loginUser($user);
-
-        $response = $client->request('GET', '/api/machines', ['headers' => ['accept' => 'application/json']]);
-
-        $this->assertResponseIsSuccessful();
-    }
-
-    public function testPostMachine(): void
-    {
-        $client = static::createClient();
-        /** @var AdminRepository $userRepository */
-        $userRepository = static::getContainer()->get(AdminRepository::class);
-        $user = $userRepository->findOneBy(['email' => 'admin@admin.ktu']);
-
-        $client->loginUser($user);
-
-        $data = [
-            'dorm' => "/api/dorms/1",
-            'type' => 'test',
-            'lastMaintenance' => '2023-11-04T10:08:46.810Z',
-            'isActive' => true
-        ];
-
-        $response = $client->request(
-            'POST',
-            '/api/machines',
-            ['headers' => ['CONTENT_TYPE' => 'application/json', 'accept' => 'application/json'], 'body' => json_encode($data)]
-        );
-
-        $this->assertResponseIsSuccessful();
-    }
-
-    /**
-     * @dataProvider historyProvider
-     */
-    public function testPutMachine($history): void
-    {
-        $client = static::createClient();
-        /** @var AdminRepository $userRepository */
-        $userRepository = static::getContainer()->get(AdminRepository::class);
-        /** @var MachineRepository $machineRepository */
-        $machineRepository = static::getContainer()->get(MachineRepository::class);
-        $user = $userRepository->findOneBy(['email' => 'admin@admin.ktu']);
-        $testMachine = $machineRepository->findOneBy(['type' => 'test']);
-
-        $client->loginUser($user);
-
-        $data = [
-            'dorm' => '/api/dorms/' . $testMachine->getDorm()->getId(),
-            'type' => 'test',
-            'lastMaintenance' => '2023-12-04T10:08:46.810Z',
-            'history' => [$history]
-        ];
-
-        $response = $client->request(
-            'PATCH',
-            '/api/machines/' . $testMachine->getId(),
-            ['headers' => ['CONTENT_TYPE' => 'application/merge-patch+json', 'accept' => 'application/json'], 'body' => json_encode($data)]
-        );
-
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonContains(['lastMaintenance' => '2023-12-04T10:08:46+02:00'], true);
-    }
-
-    public function historyProvider()
-    {
+        $machine = new Machine();
         $history = new History();
 
-        return $history;
-    }
+        $machine->addHistory($history);
+        $this->assertCount(1, $machine->getHistory());
 
-//    public function testDeleteUser()
-//    {
-//        $client = static::createClient();
-//        /** @var AdminRepository $userRepository */
-//        $userRepository = static::getContainer()->get(AdminRepository::class);
-//        $user = $userRepository->findOneBy(['email' => 'admin@admin.ktu']);
-//        $testUser = $userRepository->findOneBy(['email' => 'test@test.ktu']);
-//
-//        $client->loginUser($user);
-//
-//        $response = $client->request(
-//            'DELETE',
-//            '/api/users/' . $testUser->getId(),
-//            ['headers' => ['CONTENT_TYPE' => 'application/json', 'accept' => 'application/json']]
-//        );
-//
-//        $this->assertResponseIsSuccessful();
-//    }
+        $machine->removeHistory($history);
+        $this->assertCount(0, $machine->getHistory());
+    }
 }

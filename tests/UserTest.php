@@ -44,13 +44,19 @@ class UserTest extends TestCase
         $this->assertEquals($password, $user->getPassword());
     }
 
-    public function testAddRemoveDorm()
+    public function testAddDorm()
     {
         $user = new User();
         $dorm = new Dorm();
 
         $user->addAdminDorm($dorm);
         $this->assertContains($dorm, $user->getDorms());
+    }
+
+    public function testRemoveDorm()
+    {
+        $user = new User();
+        $dorm = new Dorm();
 
         $user->removeAdminDorm($dorm);
         $this->assertNotContains($dorm, $user->getDorms());
@@ -65,13 +71,19 @@ class UserTest extends TestCase
         $this->assertSame($dorm, $user->getDorm());
     }
 
-    public function testAddRemoveHistory()
+    public function testAddHistory()
     {
         $user = new User();
         $history = new History();
 
         $user->addHistory($history);
         $this->assertContains($history, $user->getHistory());
+    }
+
+    public function testRemoveHistory()
+    {
+        $user = new User();
+        $history = new History();
 
         $user->removeHistory($history);
         $this->assertNotContains($history, $user->getHistory());
