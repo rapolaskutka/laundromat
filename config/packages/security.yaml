@@ -1,7 +1,6 @@
 security:
     password_hashers:
         App\Entity\User: 'auto'
-    enable_authenticator_manager: true
     providers:
         users:
             entity:
@@ -24,7 +23,7 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
     access_control:
-        - { path: ^/api/users, roles: IS_AUTHENTICATED_FULLY } # Allows accessing the Swagger UI
-#        - { path: ^/api, roles: PUBLIC_ACCESS } # Allows accessing API documentations and Swagger UI docs
-#        - { path: ^/auth, roles: PUBLIC_ACCESS }
-#        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/users, roles: [ROLE_USER, ROLE_ADMIN] }
+#        - { path: ^/api/dorms, roles: IS_AUTHENTICATED }
+#        - { path: ^/api/histories, roles: IS_AUTHENTICATED_FULLY }
+#        - { path: ^/api/machines, roles: IS_AUTHENTICATED_FULLY }

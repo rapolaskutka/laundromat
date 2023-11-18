@@ -12,13 +12,17 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AdminRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discr', type: 'string')]
 #[ORM\DiscriminatorMap(['user' => User::class, 'admin' => Admin::class])]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']]
+)]
 #[ApiResource(
     uriTemplate: '/dorms/{dormId}/residents/{id}',
     operations: [ new Get() ],
@@ -39,12 +43,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read', 'user:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['user:read', 'user:write'])]
     private array $roles = [];
 
     const ADMIN = 'ROLE_ADMIN';
@@ -54,16 +61,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var ?string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['user:write'])]
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: 'administrator', targetEntity: Dorm::class)]
+    #[Groups(['user:read', 'user:write'])]
     private Collection $admin_dorms;
 
     #[ORM\ManyToOne(inversedBy: 'residents')]
     #[ORM\JoinColumn(name: "dorm_id", referencedColumnName: "id", onDelete: "CASCADE")]
+    #[Groups(['user:read', 'user:write'])]
     private ?Dorm $dorm = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: History::class)]
+    #[Groups(['user:read', 'user:write'])]
     private Collection $history;
 
     public function __construct()
