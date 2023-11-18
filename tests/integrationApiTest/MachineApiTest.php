@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\integrationApiTest;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\History;
-use App\Entity\Machine;
 use App\Repository\AdminRepository;
-use App\Repository\HistoryRepository;
 use App\Repository\MachineRepository;
 
 class MachineApiTest extends ApiTestCase
