@@ -14,7 +14,10 @@ security:
             pattern: ^/api/
             stateless: true
             provider: users
+            entry_point: jwt
             jwt: ~
+            refresh_jwt:
+                check_path: /api/token/refresh
         main:
             json_login:
                 check_path: /auth # The name in routes.yaml is enough for mapping
@@ -22,6 +25,7 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
     access_control:
         - { path: ^/api/users, roles: [ROLE_USER, ROLE_ADMIN] }
 #        - { path: ^/api/dorms, roles: IS_AUTHENTICATED }
