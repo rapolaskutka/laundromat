@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\integrationApiTest;
+namespace App\Tests\IntegrationApiTest;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Repository\AdminRepository;

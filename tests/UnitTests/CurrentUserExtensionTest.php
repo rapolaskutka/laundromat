@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\UnitTests;
 
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Doctrine\CurrentUserExtension;
 use App\Entity\Dorm;
 use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
-use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 

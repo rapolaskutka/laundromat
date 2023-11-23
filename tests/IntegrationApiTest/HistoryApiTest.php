@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\IntegrationApiTest;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Repository\AdminRepository;
 
-class HistoryTest extends ApiTestCase
+class HistoryApiTest extends ApiTestCase
 {
     public function testGetHistory(): void
     {

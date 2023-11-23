@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\unitTests;
 
+use App\Entity\Dorm;
 use App\Entity\History;
 use App\Entity\User;
-use App\Entity\Dorm;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
