@@ -36,13 +36,11 @@ class CurrentUserExtensionTest extends TestCase
 
     public function testApplyToCollectionForStandardUser(): void
     {
-        // Create a mock User object and configure it as a non-admin user
         $user = $this->createMock(User::class);
         $user->method('getId')->willReturn(1);
         $this->security->method('getUser')->willReturn($user);
         $this->security->method('isGranted')->with(User::ADMIN)->willReturn(false);
 
-        // Expectations for how the QueryBuilder should be modified
         $this->queryBuilder->expects($this->once())
             ->method('andWhere')
             ->with($this->stringContains('current_user'));
@@ -50,7 +48,23 @@ class CurrentUserExtensionTest extends TestCase
             ->method('setParameter')
             ->with('current_user', 1);
 
-        // Test the extension with a resource class
+        $this->currentUserExtension->applyToCollection($this->queryBuilder, $this->queryNameGenerator, Dorm::class);
+    }
+    public function testApplyToCollectionForAdminUser(): void
+    {
+        // Create a mock User object and configure it as a non-admin user
+        $user = $this->createMock(User::class);
+        $user->method('getId')->willReturn(1);
+        $this->security->method('getUser')->willReturn($user);
+        $this->security->method('isGranted')->with(User::ADMIN)->willReturn(true);
+
+        $this->queryBuilder->expects($this->never())
+            ->method('andWhere')
+            ->with($this->stringContains('current_user'));
+        $this->queryBuilder->expects($this->never())
+            ->method('setParameter')
+            ->with('current_user', 1);
+
         $this->currentUserExtension->applyToCollection($this->queryBuilder, $this->queryNameGenerator, Dorm::class);
     }
 }

@@ -1,22 +1,50 @@
 <?php
 
-namespace App\Tests\unitTests;
+namespace App\Tests\UnitTests;
 
+use App\Entity\User;
 use App\Entity\Dorm;
 use App\Entity\History;
-use App\Entity\User;
+use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
-    public function testGetSetEmail()
-    {
-        $email = 'test@example.com';
-        $user = new User();
-        $user->setEmail($email);
+    private User $user;
 
-        $this->assertEquals($email, $user->getEmail());
+    protected function setUp(): void
+    {
+        $this->user = new User();
     }
+
+    public function testGetId()
+    {
+        $this->assertNull($this->user->getId());
+    }
+
+    public function testEmail()
+    {
+        $email = 'user@example.com';
+        $this->user->setEmail($email);
+        $this->assertSame($email, $this->user->getEmail());
+        $this->assertSame($email, $this->user->getUserIdentifier());
+    }
+
+    public function testRoles()
+    {
+        $roles = ['ROLE_ADMIN'];
+        $this->user->setRoles($roles);
+        $this->assertContains(User::USER, $this->user->getRoles());
+        $this->assertContains('ROLE_ADMIN', $this->user->getRoles());
+    }
+
+    public function testPassword()
+    {
+        $password = 'password_hash';
+        $this->user->setPassword($password);
+        $this->assertSame($password, $this->user->getPassword());
+    }
+
     public function testEraseCredentials()
     {
         $user = new User();
@@ -26,73 +54,37 @@ class UserTest extends TestCase
         $this->assertEquals($user, $clonedUser);
     }
 
-    public function testGetSetRoles()
+    public function testAdminDorms()
     {
-        $roles = ['ROLE_USER'];
-        $user = new User();
-        $user->setRoles($roles);
-
-        $this->assertEquals($roles, $user->getRoles());
-    }
-
-    public function testGetSetPassword()
-    {
-        $password = 'password';
-        $user = new User();
-        $user->setPassword($password);
-
-        $this->assertEquals($password, $user->getPassword());
-    }
-
-    public function testAddDorm()
-    {
-        $user = new User();
         $dorm = new Dorm();
+        $this->user->addAdminDorm($dorm);
+        $this->assertInstanceOf(Collection::class, $this->user->getDorms());
+        $this->assertTrue($this->user->getDorms()->contains($dorm));
 
-        $user->addAdminDorm($dorm);
-        $this->assertContains($dorm, $user->getDorms());
+        $this->user->removeAdminDorm($dorm);
+        $this->assertFalse($this->user->getDorms()->contains($dorm));
     }
 
-    public function testRemoveDorm()
+    public function testDorm()
     {
-        $user = new User();
         $dorm = new Dorm();
-
-        $user->removeAdminDorm($dorm);
-        $this->assertNotContains($dorm, $user->getDorms());
+        $this->user->setDorm($dorm);
+        $this->assertSame($dorm, $this->user->getDorm());
     }
 
-    public function testGetSetDorm()
+    public function testHistory()
     {
-        $user = new User();
-        $dorm = new Dorm();
-
-        $user->setDorm($dorm);
-        $this->assertSame($dorm, $user->getDorm());
-    }
-
-    public function testAddHistory()
-    {
-        $user = new User();
         $history = new History();
-
-        $user->addHistory($history);
-        $this->assertContains($history, $user->getHistory());
+        $this->user->addHistory($history);
+        $this->assertInstanceOf(Collection::class, $this->user->getHistory());
+        $this->assertTrue($this->user->getHistory()->contains($history));
     }
-
     public function testRemoveHistory()
     {
-        $user = new User();
         $history = new History();
+        $this->user->addHistory($history);
 
-        $user->removeHistory($history);
-        $this->assertNotContains($history, $user->getHistory());
-    }
-
-    public function testGetUserIdentifier()
-    {
-        $user = new User();
-        $user->setEmail('test@test.ktu');
-        $this->assertSame($user->getEmail(), $user->getUserIdentifier());
+        $this->user->removeHistory($history);
+        $this->assertFalse($this->user->getHistory()->contains($history));
     }
 }

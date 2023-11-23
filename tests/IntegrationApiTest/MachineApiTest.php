@@ -82,23 +82,4 @@ class MachineApiTest extends ApiTestCase
     {
         return [[new \DateTime(), new \DateTime()]];
     }
-
-//    public function testDeleteUser()
-//    {
-//        $client = static::createClient();
-//        /** @var AdminRepository $userRepository */
-//        $userRepository = static::getContainer()->get(AdminRepository::class);
-//        $user = $userRepository->findOneBy(['email' => 'admin@admin.ktu']);
-//        $testUser = $userRepository->findOneBy(['email' => 'test@test.ktu']);
-//
-//        $client->loginUser($user);
-//
-//        $response = $client->request(
-//            'DELETE',
-//            '/api/users/' . $testUser->getId(),
-//            ['headers' => ['CONTENT_TYPE' => 'application/json', 'accept' => 'application/json']]
-//        );
-//
-//        $this->assertResponseIsSuccessful();
-//    }
 }
