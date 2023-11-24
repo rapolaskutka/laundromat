@@ -177,6 +177,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($dorm->getAdministrator() === $this) {
                 $dorm->setAdministrator(null);
             }
+//
+//            if ($dorm->getId() !== 42) {
+//                // some code
+//            }
         }
 
         return $this;

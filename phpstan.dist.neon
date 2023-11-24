@@ -1,8 +1,14 @@
 parameters:
-    level: 6
+    level: 7
+    checkGenericClassInNonGenericObjectType: false
     paths:
         - bin/
         - config/
         - public/
         - src/
         - tests/
+services:
+    -
+        class: App\Rules\YodaExpressionRule
+        tags:
+            - phpstan.rules.rule
